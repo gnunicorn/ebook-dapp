@@ -16,4 +16,6 @@ Tahoe LAFS is a long-term running, operational and very interesting idea. In its
 
 ### [Storj](https://storj.io/)
 
+StorJ is another recent addition to the world of decentralized network service. It's main focus is to create a competition to for cloud storage services like Dropbox or Amazon that is using peer-to-peer storage instead. It, too, has an incentive system that allows you to "rent out" your own storage to the network and have others pay for using it. And while it is also using many of the underlying technologies as the other frameworks, as it specializes on (file-based) data storage, it doesn't really allow DApps: as of today it has no way to publish or browse public content or apps - everything is encrypted with the users credentials. Making it unapplicable for our use cases.
+
 ### [Freenet](https://freenetproject.org/)
