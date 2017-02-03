@@ -1,0 +1,45 @@
+# IPFS with Orbit(db)
+
+Among our contestants, [IPFS](https://ipfs.io/)'s approach is unique. Rather than using the XOR-Namespace to create responsibility and assign data ownership through it, the main mechanic for data consensus revolves around the content-addressing through hashes.
+
+## Concept
+
+However, this means data is immutable - which IPFS considers a feature and builds its system on top of that idea. Once you have a hash, you can also built a "distributed" block chain or tree by simply referencing other hashes that already exist. We'll see how that mechanism later when we investigate their IPLD format. For now the most important thing to understand is that IPFS by itself is mostly an ad-hoc bittorrent-style data distribution network with the goal to provide a inter-planetary replacement for HTTP.
+
+With those goals in mind, you have to develop the system differently. With a one-way time delay of 8 minutes between earth and mars you can't expect a reliable, full-scall always connected and immediately responding network of nodes. So more than on any other networks, IPFS promotes immutability and uses encryption to ensure consistency through hashes and content addressing. Using both of these mechanism it is rather easy to "sync" networks once they connect, even through offline means, compare and catch up. To a degree unmatched by any other contestant or any other technology I know of for that matter.
+
+Once you make immutabilty your main storage system though, you have to face the troubles of a world of constant changing state. A classic way of dealing with that problem is through the idea of an (infinitely) growing list or linked data entries - a chain, if you will - where each entry is pointing to it predecessor through the content hash. For one thing this allows you to model "progress" (one thing pointing to the other means it came after it) and integrity (as the pointer is part of the hash, you can't change the link afterwards anymore). This is exactly what Orbit, and specifically Orbit-DB, is doing: it keeps an ever growing lists of changes "to the database" in a log that is put unto the network.
+
+Thus with just knowing the latest entry of the log - or any for that matter - you can go back the entire history and recreate the full state of the system at that point in time. Making state an immutable data entry. An interesting approach, that technically speaking also all "blockchain" systems use. And a huge difference to how databases classicly act, in which the previous state is usually unaccessible once a transaction completed: a database always only holds the _current state_ of the system. In IPFS, orbit-db holds that _current state_ through creating the entire history.
+
+
+This comes with a major drawback though, have you figure it out yet? Scalability: similar as blockchain technology, IPFS's Orbit-DB faces the problem that with every added tansaction and state change, the history grows making it more and more computation intensive to recreate the state. Most systems go around this problem by making that a one-time setup procedure and then stay connected to the network and add new transaction in more or less real-time: thus keeping the _current state_ in memory. At the time of writing Orbit-DB doesn't have that capability.
+
+
+Another problem that blockchains got around but that effects orbit fundamentally is: how in an immutable system of chains, do you know which is that latest entry you should be starting from? It doesn't effect blockchains as much as they have only _one big chain_ to worry about and all clients you connect to will tell you what they believe the latest entry is. When a newer entry shows up, that is easy for you to check and integrate. However, Orbit is built on-top of IPFS and is not an integral part of it (at least for now) and is meant to be replacing every database instance of each individual application: making it easily hundreds of thousands of independent chains, many of which will have only very few clients actually using them.
+
+For the time being, orbit "fixes" that problem in a similar way as block chains do: when you add a new entry you "announce" it to the network through the IPFS networks publish-subscribe mechanism. Thus any other client interested in that particular chain would be informed about the update in real-time, fetch it and update the ui. As a matter of fact that is exactly what the Orbit-Application is showing off: a live chat using these mechanism.
+
+_Sidenote_: though [Orbit](https://github.com/haadcode/orbit) is specifically the chat-application and the database mechanism is actually called [orbit-db](https://ipfs.io/) (and [ipfs-log](https://github.com/haadcode/ipfs-log) under that), for the purpose of this book and its focus we care more about the later. Thus, I'll use the shorter 'orbit' to refer to database technology (db, log and pub-sub all combined) and will indicate clearly if I do mean the application. 
+
+## Technology
+
+IPFS is a service deamon written in [Go](https://golang.org/), which connects to a bittorrent style network. You can than interact with that service through the internal HTTP-API or through the command line client. This allows you to retrieve and publish content. Using this simple HTTP-Interface, many connections for many languages have been written and published, but on the forefront of it, is Javascript and NodeJS. For which there is a secondary client - yet still alpha: a [reimplementation of IPFS in J,avascript](https://github.com/ipfs/js-ipfs) for the browser and NodeJS. In order to allow this client to connect the underlying library (libp2p), among others, implement the protocol on top of websockets, too.
+
+So, from the current standing, you could include the ipfs-js library in your app in the browser and use that to load all other content from the ipfs network. However, you'd still have the host the initial code somewhere accessible through a normal browser or your users must have the IPFS deamon set up and running if you want to host it directly there.
+
+### Name Lookup
+
+As said, IPFS use content addressing as the main mechanism to retrieve information from the network. Clearily you can't expect any random person to remember a 32-char-hex-code to access your website. Aside from that it is very impractical (and hard) these are also immutable: you'd never be able to publish any updates to the website('s source code) once pubished. Of course, IPFS offers a solution for that, called IPNS - Inter Planetary Naming System.
+
+IPNS is a global public-key-infrastructure: through the command line tool you can register any name - unless already registered - and point it to any content address. Further more, you sign that key with the local - automatically created - private key, thus only the owner of that key is able to update that value again later. IPFS effectively acts as a giant key-value-store where anyone can claim any key and you can only update its value if you own the corresponding private key.
+
+Not only can anyone now lookup the shorter, nice name and figure out the content address they should be fetching, you can also publish new content and then just update the address so anyone asking for it after, will fetch the new version.
+
+### Content persistence and Filecoin
+
+We elegantly shipped around a major issue of publishing content on IPFS so far though: data persistence. If IPFS doesn't expect the network to always be reliable, or even remotely there, how would it ever know if data should be replicated or must be made available again. This the only way to ensure, right now, that data is available in the network, you'd still have to run an instance connected to the network that offers it - effectively making that the "server".
+
+But in a fully decentributed system we don't want to have any single servers. Lukily a lot of so called cache-proxies are also running, caching everything that crosses their wire. And while with enough of those, the likely hood of unavailability - especially for popular content - decreases, it still is not reliable for otherwise "personal content", like your vacation photo album, that very few actually try to access but you want to be able to acceess from everywhere.
+
+Though there is a white paper published in describing a virtual currency you'd award based on people offering storage capacity to the network and you paying that currency when you want to use it, called [FileCoin](http://filecoin.io/), we are not aware of any attempts to actually implement this ontop of IPFS as of yet. For the time being, while the system offers reasonable reliability for data once published, especially popular content, if you want guarantees you still have to have a node under your control serving it indefinetely. IPFS does not have any upload-and-shut-down-support yet. 
