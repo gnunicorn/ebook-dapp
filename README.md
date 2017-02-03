@@ -2,6 +2,8 @@
 
 ## A Primer to Web3, decentributed Web Application Development
 
+## _IN PROGRESS_
+
 This book will introduce you to building decentributed Web Application Development. It is meant as a practical guide, and as such will focus on today-ready applicable knowledge. After a short definition, it must, however, cover some basics of decentributed system to understand the implications this has on the platforms and even up to the application design level.
 
 As a practical guide this eBook compares multiple current platforms on the robustness of their decentralization architecture as well as their higher-level provided tooling. We'll compare these first on a technological basis before going further, publishing our first Blog on those networks and asses how easy it is for a common user to access it. We'll then try to implement a commenting features to that Blog and must talk about the, rather different, data types and computation models these networks provide.
