@@ -9,7 +9,7 @@
     - [Consensus](basic/Consensus.md)
     - [The Virtual-Address-Space)](basics/Virtual-Address-Space.md)
 * [Contestants](contestants/README.md)
-    - [Etheriums SWARM & Whisper](contestants/SWARM.md)
+    - [Ethereums SWARM & Whisper](contestants/Ethereums-SWARM.md)
     - [IPFS with OrbitDB](contestants/ipfs-with-orbit.md)
     - [the SAFE Network](contestants/SAFE.md)
     - [Secure Scuttlebot](contestants/Scuttlebot.md)
