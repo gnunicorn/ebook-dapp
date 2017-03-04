@@ -15,6 +15,7 @@
     - [Secure Scuttlebot](contestants/Scuttlebot.md)
     - [Others](contestants/others.md)
 * [Theory](theory/README.md)
+    - [Publishing](theory/Publishing.md)
     - [Naming Things](theory/Naming-things.md)
 * [Publish a Website](building/static website/README.md)
 * [Dynamic App](building/dynamic app/README.md)
