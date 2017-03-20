@@ -37,3 +37,9 @@ The idea behind IPDB is to provide this as a trusted service run by a multi-nati
 Similarly to many others here mention, Dat, too is an amazing decentral data distribution system. From its starting point of providing "Git but for big amounts of data" years ago it has developed in a mature and incredibly great system to distribute huge amount of data all accross the world super fast. And with "beaker" it even provides a browser to host and browse website with, that every browser instance als "becomes a host through". It is pretty amazing.
 
 But in principle also relies on immutability as the key mechanism to allow the distribution. And with immutability comes the problem that interactive apps always face: their entire point is _to change state_. Unlike IPFS's "Orbit" framework, Dat does not yet have an answer to this particular requirement, hence the exclusion from the list of contestants at this point in time.
+
+## Blockstack, Unhosted and RemoteStorage
+
+Three other projects, which are often mentioned when talking about the subject of DApps are Unhosted (and its RemoteStorage) and Blockstack. These libs provide features to separate user data from the actual application hosting and context and therefore provide a key feature we are looking after. However, they do that by building on existing web-technology, which isn't bad, but in our case leaves the user and developer in charge of still "hosting" the app and the data in some manner. And though this means separatation of various parts of data (as every user has their own data server), this isn't quite the "decentrelisation" we are after.
+
+More over, as both explicitly fallback on these technologies, they don't intend to provide "distribution" facilities: if your server (or that app) is down, you are as screwed as before. That isn't enough to qualify as a candidate for our rumble here.
