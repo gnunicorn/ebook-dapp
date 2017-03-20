@@ -7,7 +7,7 @@
     - [DApp Infrastructure](basics/DApp Infrastructure.md)
     - [Encryption](basics/Encryption.md)
     - [Consensus](basic/Consensus.md)
-    - [The Virtual-Address-Space)](basics/Virtual-Address-Space.md)
+    - [The Virtual-Address-Space](basics/Virtual-Address-Space.md)
 * [Contestants](contestants/README.md)
     - [Ethereums SWARM & Whisper](contestants/Ethereums-SWARM.md)
     - [IPFS with OrbitDB](contestants/ipfs-with-orbit.md)
